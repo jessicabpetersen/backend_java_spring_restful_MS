@@ -1,0 +1,21 @@
+server:
+  port: ${BACKEND_PORT:8081}
+  
+spring:
+  application:
+    name: order-service
+  datasource:
+    username: ${DATASOURCE_USERNAME:postgres}
+    password: ${DATASOURCE_PASSWORD:root}
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/backend}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+ms:
+  item-pedido: ${MS-ITEM-PEDIDO:http://localhost:8082/v1}
+  product: ${MS-PRODUCT:http://localhost:8080/v1}

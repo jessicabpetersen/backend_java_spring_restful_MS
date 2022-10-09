@@ -1,0 +1,19 @@
+server:
+  port: ${BACKEND_PORT:8082}
+  
+spring:
+  application:
+    name: itens-order-service
+  datasource:
+    username: ${DATASOURCE_USERNAME:postgres}
+    password: ${DATASOURCE_PASSWORD:root}
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/backend}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+      
