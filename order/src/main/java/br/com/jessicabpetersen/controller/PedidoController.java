@@ -60,4 +60,18 @@ public class PedidoController {
 		service.deleteById(id);
 	}
 	
+	@GetMapping("/search")
+	@ResponseStatus(HttpStatus.OK)
+	public Page<PedidoVO> search(@RequestParam("searchTerm") Double searchTerm,
+							@RequestParam(value = "page", required=false, defaultValue = "0") int page,
+							@RequestParam(value = "size", required=false, defaultValue = "10") int size){
+		return service.search(searchTerm, page, size);
+	}
+	
+	@GetMapping("/pagination")
+	@ResponseStatus(HttpStatus.OK)
+	public Page<PedidoVO> pagination(@PageableDefault(direction = Direction.ASC, sort = "id") Pageable pageable){
+		return service.pagination(pageable);
+	}
+	
 }
