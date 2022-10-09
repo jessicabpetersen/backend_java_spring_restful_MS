@@ -23,6 +23,7 @@ import br.com.jessicabpetersen.modelVO.PedidoVO;
 import br.com.jessicabpetersen.modelVO.ProdutoServicoVo;
 import br.com.jessicabpetersen.modelVO.Situacao;
 import br.com.jessicabpetersen.modelVO.Tipo;
+import br.com.jessicabpetersen.repository.PedidoPaginationRepository;
 import br.com.jessicabpetersen.repository.PedidoRepository;
 
 @Service
@@ -31,6 +32,8 @@ public class PedidoService {
 	@Autowired
 	private PedidoRepository repository;
 
+	@Autowired
+	private PedidoPaginationRepository repositoryPagination;
 	
 	@Autowired
 	private ItensPedidoFeignClient itensClient;
@@ -178,6 +181,35 @@ public class PedidoService {
 		itensClient.deleteOrderByIdPedido(id);
 		repository.delete(pedido.get());
 		
+	}
+
+	public Page<PedidoVO> search(Double searchTerm, int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.ASC, "id");
+		Page<Pedido> pageEntity = repository.search(searchTerm, pageRequest);
+		return converterPageEntityToPageVo(pageEntity);
+	}
+
+	public Page<PedidoVO> pagination(Pageable pageable) {
+		Page<Pedido> pageP = repositoryPagination.findAll(pageable);
+		return converterPageEntityToPageVo(pageP);
+	}
+	
+	protected Page<PedidoVO> converterPageEntityToPageVo(Page<Pedido> pageEntity ){
+		Page<PedidoVO>  po = pageEntity.map(obj -> mapper.map(obj, PedidoVO.class));
+		List<PedidoVO> pedidoVo = po.getContent();
+		int index = 0;
+		for(Pedido pedido: pageEntity.getContent()) {
+			ItensPedidoVO itensPedido = itensClient.getItensOrderByIdPedido(pedido.getId().toString());
+			List<ProdutoServicoVo> produtos = new ArrayList();
+			for(UUID uuid: itensPedido.getIdProdutoServico()) {
+				ProdutoServicoVo produto = produtoClient.findById(uuid.toString());
+				produtos.add(produto);
+			}
+			pedidoVo.get(index).setProdutoServico(produtos);
+			pedidoVo.get(index).setTotal(calculaTotalPedido(produtos, pedido.getDesconto(), pedido.getSituacao()));
+			index++;
+		}
+		return po;
 	}
 
 	

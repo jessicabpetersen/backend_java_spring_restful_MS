@@ -61,6 +61,8 @@ Foi configurado para acessar o banco de dados Postgresl na porta padrão com o n
 | /v1/pedido/:id | GET | Busca um pedido no banco de acordo com o id, que é passado como Path Variable na url|
 |/v1/pedido| GET | Busca todos os pedidos no banco|
 |/v1/pedido/:id| DELETE | Deleta o pedido no banco de dados de acordo com o id, que é passado como Path Variable na url|
+|/v1/pedido/search| GET| busca uma lista de produtos de acordo com o desconto, que é passado como Request Param 'searchTerm', é permitido passar também os Request Param 'page' e 'size' para fazer a paginação|
+|/v1/pedido/pagination| GET | Busca todos os pedidos no banco de acordo com a paginação passada (objecto Pageable)|
 
 ## Endpoint para cadastro direto no item-pedido:
 | endpoint | HTTP|Descrição |
